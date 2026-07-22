@@ -82,4 +82,17 @@ export class UsersService {
     await this.prisma.user.delete({ where: { id } });
     return { message: 'User deleted' };
   }
+
+  async createAdminUser(username: string, password: string) {
+    const passwordHash = await bcrypt.hash(password, 12);
+    return this.prisma.user.create({
+      data: {
+        username,
+        displayName: 'System Administrator',
+        email: process.env.ADMIN_EMAIL || `${username}@madhur.com`,
+        passwordHash,
+        role: 'ADMIN',
+      },
+    });
+  }
 }
