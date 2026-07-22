@@ -13,12 +13,18 @@ export class AuthService {
   async login(username: string, password: string) {
     let user = await this.usersService.findByUsername(username);
 
-    // Dynamic auto-seed fallback if DB is empty / clean
-    if (!user && (username === 'jigar' || username === process.env.ADMIN_USERNAME)) {
-      const adminPassword = process.env.ADMIN_PASSWORD || 'katukda';
-      if (password === adminPassword) {
-        user = await this.usersService.createAdminUser(username, password);
-      }
+    // Dynamic auto-seed fallback if DB is empty / clean (reads strictly from process.env)
+    const configuredAdminUsername = process.env.ADMIN_USERNAME;
+    const configuredAdminPassword = process.env.ADMIN_PASSWORD;
+
+    if (
+      !user &&
+      configuredAdminUsername &&
+      configuredAdminPassword &&
+      username === configuredAdminUsername &&
+      password === configuredAdminPassword
+    ) {
+      user = await this.usersService.createAdminUser(username, password);
     }
 
     if (!user) throw new UnauthorizedException('Invalid credentials');
