@@ -11,8 +11,13 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
-  // Setup CORS
-  app.enableCors();
+  // Setup Explicit Production CORS for Vercel and all origins
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: 'Content-Type,Accept,Authorization,X-Requested-With',
+  });
 
   // Setup Swagger Documentation
   const config = new DocumentBuilder()
@@ -25,9 +30,9 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   const port = process.env.PORT || 5000;
-  await app.listen(port);
-  logger.log(`[Madhur Server] Listening on http://localhost:${port}`);
-  logger.log(`[Swagger Docs] Available on http://localhost:${port}/docs`);
+  await app.listen(port, '0.0.0.0');
+  logger.log(`[Madhur Server] Listening on port ${port}`);
+  logger.log(`[Swagger Docs] Available on /docs`);
 }
 
 bootstrap();
