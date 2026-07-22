@@ -13,10 +13,15 @@ interface HeaderNavProps {
 export const HeaderNav: React.FC<HeaderNavProps> = ({ onSearchClick }) => {
   const navigate = useNavigate();
   const { audioMode, setAudioMode } = usePlayerStore();
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const profilePath = '/listener/user-profile';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <>
@@ -92,6 +97,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ onSearchClick }) => {
           <Link
             to={profilePath}
             className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#ba0034]/30 hover:border-[#ba0034] transition-colors flex-shrink-0"
+            title="User Profile"
           >
             <img
               src={user?.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
@@ -99,6 +105,15 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ onSearchClick }) => {
               className="w-full h-full object-cover"
             />
           </Link>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="p-2 rounded-full hover:bg-red-500/10 text-red-500 dark:text-red-400 transition-colors cursor-pointer"
+            title="Sign Out / Logout"
+          >
+            <span className="material-symbols-outlined text-xl">logout</span>
+          </button>
         </div>
       </header>
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, useNavigate } from 'react-router';
 import { useAuthStore } from '@/shared/auth/useAuthStore';
 import { NavigationDrawer } from './NavigationDrawer';
 
@@ -23,8 +23,14 @@ const LISTENER_NAV_ITEMS: NavItem[] = [
 ];
 
 export const SidebarNav: React.FC = () => {
+  const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <>
@@ -55,7 +61,7 @@ export const SidebarNav: React.FC = () => {
           </div>
         </div>
 
-        {/* All Pages Catalog Trigger */}
+        {/* Bottom Actions */}
         <div className="pt-4 border-t border-[#e6bcbd]/40 dark:border-white/10 space-y-2">
           <button
             onClick={() => setIsDrawerOpen(true)}
@@ -63,6 +69,14 @@ export const SidebarNav: React.FC = () => {
           >
             <span className="material-symbols-outlined text-lg">grid_view</span>
             <span>All Pages Directory (100+)</span>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="w-full py-2.5 px-3 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-lg">logout</span>
+            <span>Log Out</span>
           </button>
         </div>
       </aside>
