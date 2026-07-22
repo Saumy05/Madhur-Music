@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ARTIST
+  ADMIN
+}
+
+enum SongStatus {
+  PENDING
+  PUBLISHED
+  REJECTED
+}
+
+model User {
+  id           String           @id @default(auto()) @map("_id") @db.ObjectId
+  email        String           @unique
+  passwordHash String
+  username     String           @unique
+  displayName  String
+  avatarUrl    String?
+  role         Role             @default(USER)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  playlists         Playlist[]
+  likes             Like[]
+  histories         RecentlyPlayed[]
+  submittedSongs    Song[]           @relation("SongSubmitter")
+
+  @@map("users")
+}
+
+model Artist {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  bio       String?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+
+  albums    Album[]
+  songs     Song[]
+
+  @@map("artists")
+}
+
+model Album {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  coverUrl    String
+  releaseYear Int
+  artistId    String   @db.ObjectId
+  createdAt   DateTime @default(now())
+
+  artist      Artist   @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  songs       Song[]
+
+  @@map("albums")
+}
+
+model Song {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  durationSec   Int
+  audioUrl      String
+  coverUrl      String?
+  explicit      Boolean        @default(false)
+  playsCount    Int            @default(0)
+  status        SongStatus     @default(PUBLISHED)
+  submittedById String?        @db.ObjectId
+  artistId      String         @db.ObjectId
+  albumId       String?        @db.ObjectId
+  createdAt     DateTime       @default(now())
+
+  artist        Artist         @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  album         Album?         @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  submittedBy   User?          @relation("SongSubmitter", fields: [submittedById], references: [id], onDelete: SetNull)
+  likes         Like[]
+  histories     RecentlyPlayed[]
+  playlistItems PlaylistSong[]
+  notifications Notification[]
+
+  @@map("songs")
+}
+
+model Notification {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  type      String   @default("SONG_SUBMISSION")
+  title     String
+  body      String
+  songId    String   @db.ObjectId
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  song      Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Playlist {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  coverUrl    String?
+  isPublic    Boolean        @default(true)
+  ownerId     String         @db.ObjectId
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  owner       User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  songs       PlaylistSong[]
+
+  @@map("playlists")
+}
+
+model PlaylistSong {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  playlistId String   @db.ObjectId
+  songId     String   @db.ObjectId
+  addedAt    DateTime @default(now())
+
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  song       Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@unique([playlistId, songId])
+  @@map("playlist_songs")
+}
+
+model Like {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  songId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  song      Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, songId])
+  @@map("likes")
+}
+
+model RecentlyPlayed {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  songId    String   @db.ObjectId
+  playedAt  DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  song      Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@map("recently_played")
+}

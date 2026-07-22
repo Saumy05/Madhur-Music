@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --color-surface: #fff8f7;
+    --color-surface-dim: #f3d2d3;
+    --color-surface-bright: #fff8f7;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #fff0f0;
+    --color-surface-container: #ffe9e9;
+    --color-surface-container-high: #ffe1e1;
+    --color-surface-container-highest: #fcdbdb;
+    --color-on-surface: #281718;
+    --color-on-surface-variant: #5d3f40;
+    --color-outline: #916e6f;
+    --color-outline-variant: #e6bcbd;
+    --color-surface-tint: #be0036;
+    --color-primary: #ba0034;
+    --color-on-primary: #ffffff;
+    --color-primary-container: #e51245;
+    --color-on-primary-container: #fffbff;
+    --color-secondary: #8d2ebc;
+    --color-on-secondary: #ffffff;
+    --color-secondary-container: #d072ff;
+    --color-on-secondary-container: #540079;
+    --color-tertiary: #00694b;
+    --color-on-tertiary: #ffffff;
+    --color-tertiary-container: #00855f;
+    --color-on-tertiary-container: #f5fff7;
+    --color-error: #ba1a1a;
+    --color-on-error: #ffffff;
+    --color-background: #fff8f7;
+    --color-on-background: #281718;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-on-background);
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+  }
+}
+
+/* Reusable Glassmorphism & Aesthetics Utility Classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+}
+
+.dark .glass-panel {
+  background: rgba(40, 23, 24, 0.75);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+}
+
+.artist-glow {
+  box-shadow: 0 20px 40px -15px rgba(186, 0, 52, 0.25);
+}
+
+.glow-button {
+  box-shadow: 0 8px 20px -6px rgba(186, 0, 52, 0.4);
+}
+
+.premium-gradient {
+  background: linear-gradient(135deg, #ba0034 0%, #8d2ebc 100%);
+}
+
+.premium-gradient-text {
+  background: linear-gradient(135deg, #ba0034 0%, #8d2ebc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Material Symbols alignment helper */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}

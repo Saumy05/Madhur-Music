@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@madhur/shared": ["../../packages/shared/src"],
+      "@madhur/types": ["../../packages/types/src"],
+      "@madhur/utils": ["../../packages/utils/src"],
+      "@madhur/constants": ["../../packages/constants/src"]
+    }
+  },
+  "include": ["src/**/*"]
+}
