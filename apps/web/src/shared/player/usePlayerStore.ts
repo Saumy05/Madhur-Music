@@ -50,7 +50,7 @@ interface PlayerState {
   setAudioMode: (mode: AudioMode) => void;
   setFullPlayerOpen: (open: boolean) => void;
   toggleFullPlayer: () => void;
-  loadCatalog: () => Promise<void>;
+  loadCatalog: (userId?: string) => Promise<void>;
 }
 
 // ----------------------------------------------------
@@ -557,9 +557,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setAudioMode: (audioMode) => set({ audioMode }),
   setFullPlayerOpen: (isFullPlayerOpen) => set({ isFullPlayerOpen }),
   toggleFullPlayer: () => set((state) => ({ isFullPlayerOpen: !state.isFullPlayerOpen })),
-  loadCatalog: async () => {
+  loadCatalog: async (userId?: string) => {
     try {
-      const backendSongs = await fetchSongs();
+      const backendSongs = await fetchSongs(userId);
       const mapped = backendSongs.map(mapBackendSongToTrack);
       set({ catalogTracks: mapped });
 
