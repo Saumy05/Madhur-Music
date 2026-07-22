@@ -1,4 +1,6 @@
-export const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5001';
+// @ts-ignore
+const viteEnv = typeof import.meta !== 'undefined' ? (import.meta as any).env : undefined;
+export const API_URL = viteEnv?.VITE_API_URL || 'http://localhost:5001';
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 
