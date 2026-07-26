@@ -10,6 +10,7 @@ const BASE_ADMIN_NAV_ITEMS = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: 'dashboard' },
   { label: 'Users', path: '/admin/users', icon: 'manage_accounts' },
   { label: 'Songs', path: '/admin/songs', icon: 'music_note', badge: true },
+  { label: 'Banners & Promos', path: '/admin/banners', icon: 'view_carousel' },
   { label: 'Artists', path: '/admin/artists', icon: 'person_stars' },
   { label: 'Labels', path: '/admin/labels', icon: 'domain' },
   { label: 'Subscriptions', path: '/admin/subscriptions', icon: 'subscriptions' },

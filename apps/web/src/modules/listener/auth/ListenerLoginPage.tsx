@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, Navigate } from 'react-router';
-import { useAuthStore } from '@/shared/auth/useAuthStore';
+import { useAuthStore, getRoleHomePath } from '@/shared/auth/useAuthStore';
 import { PillButton } from '@/components/ui/PillButton';
 import { Logo } from '@/components/common/Logo';
 
@@ -11,7 +11,7 @@ export const ListenerLoginPage: React.FC = () => {
   const [password, setPassword] = useState('••••••••');
 
   if (isAuthenticated && user) {
-    return <Navigate to="/listener" replace />;
+    return <Navigate to={getRoleHomePath(user.role)} replace />;
   }
 
   const handleSubmit = (e: React.FormEvent) => {

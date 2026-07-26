@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { fetchSongs, recordSongPlay } from '../../data/songsApi';
+import { useAuthStore } from '../auth/useAuthStore';
 
 export interface Track {
   id: string;
@@ -231,7 +232,7 @@ const getYTPlayer = (set: any, get: any): Promise<any> => {
 
 const mapBackendSongToTrack = (song: any): Track => ({
   id: song.id,
-  title: song.title,
+  title: song.status === 'PENDING' ? `${song.title} (Pending Approval)` : song.title,
   artist: song.artist?.name || 'Unknown Artist',
   album: song.album?.title || 'Single',
   coverUrl: song.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80',
@@ -559,7 +560,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   toggleFullPlayer: () => set((state) => ({ isFullPlayerOpen: !state.isFullPlayerOpen })),
   loadCatalog: async (userId?: string) => {
     try {
-      const backendSongs = await fetchSongs(userId);
+      const activeUserId = userId || useAuthStore.getState().user?.id;
+      const backendSongs = await fetchSongs(activeUserId);
       const mapped = backendSongs.map(mapBackendSongToTrack);
       set({ catalogTracks: mapped });
 

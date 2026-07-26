@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, Navigate } from 'react-router';
 import { useAuthStore, UserRole, getRoleHomePath } from '@/shared/auth/useAuthStore';
 import { PillButton } from '@/components/ui/PillButton';
 import { Logo } from '@/components/common/Logo';
@@ -16,12 +16,16 @@ const ROLE_OPTIONS: { role: UserRole; label: string; icon: string }[] = [
 
 export const AuthPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login, signup } = useAuthStore();
+  const { user, isAuthenticated, login, signup } = useAuthStore();
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('saumya@example.com');
   const [password, setPassword] = useState('••••••••');
   const [selectedRole, setSelectedRole] = useState<UserRole>('USER');
+
+  if (isAuthenticated && user) {
+    return <Navigate to={getRoleHomePath(user.role)} replace />;
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

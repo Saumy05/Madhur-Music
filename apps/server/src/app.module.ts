@@ -6,10 +6,12 @@ import { SongsModule } from './modules/songs/songs.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { BannersModule } from './modules/banners/banners.module';
 
 @Module({
-  imports: [PrismaModule, SongsModule, UsersModule, AuthModule, NotificationsModule],
+  imports: [PrismaModule, SongsModule, UsersModule, AuthModule, NotificationsModule, BannersModule],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
+

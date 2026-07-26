@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { MOCK_ALBUMS, MOCK_TRACKS } from '@/data/mockData';
 import { AlbumCard } from '@/components/ui/AlbumCard';
@@ -6,14 +6,19 @@ import { TrackRow } from '@/components/ui/TrackRow';
 import { PillButton } from '@/components/ui/PillButton';
 import { useAuthStore } from '@/shared/auth/useAuthStore';
 import { usePlayerStore } from '@/shared/player/usePlayerStore';
+import { fetchBanners, Banner } from '@/data/songsApi';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const { playTrack, currentTrack, isPlaying, togglePlay, catalogTracks, loadCatalog } = usePlayerStore();
+  const [banners, setBanners] = useState<Banner[]>([]);
 
   useEffect(() => {
     loadCatalog();
+    fetchBanners('HOME')
+      .then((data) => setBanners(data))
+      .catch(() => { /* silent fallback */ });
   }, [loadCatalog]);
 
   const allTracks = [...catalogTracks, ...MOCK_TRACKS];
@@ -39,6 +44,20 @@ export const HomePage: React.FC = () => {
     return 'Good Evening';
   };
 
+  // Fallback banner if DB banners array is empty
+  const activeBanners: Partial<Banner>[] = banners.length > 0 ? banners : [
+    {
+      id: 'fb-1',
+      title: 'Hi-Res Audio Headroom Calibrator',
+      subtitle: 'Dolby Spatial Soundstage Staging',
+      description: 'Optimize your headphones with our custom 10-band spatial hardware equalizer profiles.',
+      badgeText: 'Dolby Spatial',
+      imageUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&auto=format&fit=crop&q=80',
+      ctaText: 'Calibrate Staging',
+      ctaLink: '/listener/spatial-calibrator',
+    },
+  ];
+
   return (
     <div className="space-y-10 max-w-6xl mx-auto animate-in fade-in duration-200">
       {/* 1. Header Greeting & Hero Banner */}
@@ -63,26 +82,47 @@ export const HomePage: React.FC = () => {
         </PillButton>
       </div>
 
-      {/* 2. Premium Promotional Banner */}
-      <div className="relative w-full rounded-3xl overflow-hidden glass-panel border border-white/40 artist-glow p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 bg-gradient-to-r from-[#ffe9e9]/50 via-transparent to-[#ffe9e9]/10">
-        <div className="space-y-3 text-center md:text-left">
-          <span className="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest bg-[#ba0034] text-white">
-            Dolby Spatial
-          </span>
-          <h3 className="font-black text-xl sm:text-2xl text-[#281718] dark:text-white leading-tight">
-            Hi-Res Audio Headroom Calibrator
-          </h3>
-          <p className="text-xs text-[#5d3f40] dark:text-zinc-300 max-w-md">
-            Optimize your headphones with our custom 10-band spatial hardware equalizer profiles.
-          </p>
-        </div>
-        <PillButton
-          variant="secondary"
-          onClick={() => navigate('/listener/spatial-calibrator')}
-          className="whitespace-nowrap cursor-pointer"
-        >
-          Calibrate Staging
-        </PillButton>
+      {/* 2. Admin-Configured Promotional Banners (Rendered in exact sequence order) */}
+      <div className="space-y-6">
+        {activeBanners.map((banner) => (
+          <div
+            key={banner.id}
+            className="relative w-full rounded-3xl overflow-hidden glass-panel border border-white/40 artist-glow p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 bg-gradient-to-r from-[#ffe9e9]/50 via-transparent to-[#ffe9e9]/10"
+          >
+            {banner.imageUrl && (
+              <div className="absolute inset-0 -z-10 opacity-15 dark:opacity-20 pointer-events-none">
+                <img src={banner.imageUrl} alt="" className="w-full h-full object-cover" />
+              </div>
+            )}
+            <div className="space-y-3 text-center md:text-left min-w-0">
+              {banner.badgeText && (
+                <span className="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest bg-[#ba0034] text-white">
+                  {banner.badgeText}
+                </span>
+              )}
+              {banner.subtitle && (
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-[#ba0034] dark:text-rose-400">
+                  {banner.subtitle}
+                </p>
+              )}
+              <h3 className="font-black text-xl sm:text-2xl text-[#281718] dark:text-white leading-tight">
+                {banner.title}
+              </h3>
+              <p className="text-xs text-[#5d3f40] dark:text-zinc-300 max-w-xl">
+                {banner.description}
+              </p>
+            </div>
+            {banner.ctaText && (
+              <PillButton
+                variant="secondary"
+                onClick={() => navigate(banner.ctaLink || '/listener/spatial-calibrator')}
+                className="whitespace-nowrap cursor-pointer flex-shrink-0"
+              >
+                {banner.ctaText}
+              </PillButton>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* 3. Featured Albums Section */}

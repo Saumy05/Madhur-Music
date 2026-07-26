@@ -260,3 +260,103 @@ export async function recordSongPlay(id: string): Promise<void> {
     /* silent */
   }
 }
+
+// ─── Banners ──────────────────────────────────────────────────────────────────
+
+export interface Banner {
+  id: string;
+  title: string;
+  subtitle?: string;
+  description: string;
+  badgeText?: string;
+  imageUrl?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  order: number;
+  isActive: boolean;
+  targetPage: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateBannerPayload {
+  title: string;
+  subtitle?: string;
+  description: string;
+  badgeText?: string;
+  imageUrl?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  order?: number;
+  isActive?: boolean;
+  targetPage?: string;
+}
+
+export interface UpdateBannerPayload {
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  badgeText?: string;
+  imageUrl?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  order?: number;
+  isActive?: boolean;
+  targetPage?: string;
+}
+
+export async function fetchBanners(targetPage = 'HOME'): Promise<Banner[]> {
+  const res = await fetch(`${API_URL}/banners?targetPage=${targetPage}`);
+  if (!res.ok) throw new Error('Failed to fetch banners');
+  return res.json();
+}
+
+export async function fetchAdminBanners(token: string): Promise<Banner[]> {
+  const res = await fetch(`${API_URL}/banners/admin`, { headers: authHeaders(token) });
+  if (!res.ok) throw new Error('Failed to fetch admin banners');
+  return res.json();
+}
+
+export async function createBanner(token: string, payload: CreateBannerPayload): Promise<Banner> {
+  const res = await fetch(`${API_URL}/banners`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to create banner');
+  }
+  return res.json();
+}
+
+export async function updateBanner(token: string, id: string, payload: UpdateBannerPayload): Promise<Banner> {
+  const res = await fetch(`${API_URL}/banners/${id}`, {
+    method: 'PATCH',
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to update banner');
+  }
+  return res.json();
+}
+
+export async function reorderBanners(token: string, bannerIds: string[]): Promise<void> {
+  const res = await fetch(`${API_URL}/banners/reorder`, {
+    method: 'PATCH',
+    headers: authHeaders(token),
+    body: JSON.stringify({ bannerIds }),
+  });
+  if (!res.ok) throw new Error('Failed to reorder banners');
+}
+
+export async function deleteBanner(token: string, id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/banners/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(token),
+  });
+  if (!res.ok) throw new Error('Failed to delete banner');
+}
+

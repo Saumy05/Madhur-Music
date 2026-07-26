@@ -11,6 +11,7 @@ import { AdminRolesPermissionsPage } from '../pages/AdminRolesPermissionsPage';
 import { AdminAuditLogsSettingsPage } from '../pages/AdminAuditLogsSettingsPage';
 import { AdminSettingsPage } from '../pages/AdminSettingsPage';
 import { AdminSongsPage } from '../pages/AdminSongsPage';
+import { AdminBannersPage } from '../pages/AdminBannersPage';
 
 export const adminPublicRoutes: RouteObject[] = [
   {
@@ -24,6 +25,7 @@ export const adminProtectedRoutes: RouteObject[] = [
   { path: 'dashboard', element: <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATOR']}><AdminPanelPage /></ProtectedRoute> },
   { path: 'users', element: <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATOR']}><AdminUsersPage /></ProtectedRoute> },
   { path: 'songs', element: <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATOR']}><AdminSongsPage /></ProtectedRoute> },
+  { path: 'banners', element: <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATOR']}><AdminBannersPage /></ProtectedRoute> },
   { path: 'artists', element: <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATOR']}><AdminArtistsLabelsPage /></ProtectedRoute> },
   { path: 'labels', element: <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATOR']}><AdminArtistsLabelsPage /></ProtectedRoute> },
   { path: 'subscriptions', element: <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATOR']}><AdminSubscriptionsPaymentsPage /></ProtectedRoute> },
@@ -34,3 +36,4 @@ export const adminProtectedRoutes: RouteObject[] = [
   { path: 'audit-logs', element: <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATOR']}><AdminAuditLogsSettingsPage /></ProtectedRoute> },
   { path: 'settings', element: <ProtectedRoute allowedRoles={['ADMIN', 'ADMINISTRATOR']}><AdminSettingsPage /></ProtectedRoute> },
 ];
+

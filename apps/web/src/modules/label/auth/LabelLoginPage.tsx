@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { useAuthStore } from '@/shared/auth/useAuthStore';
+import { useNavigate, Navigate } from 'react-router';
+import { useAuthStore, getRoleHomePath } from '@/shared/auth/useAuthStore';
 import { Logo } from '@/components/common/Logo';
 
 export const LabelLoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuthStore();
+  const { user, isAuthenticated, login } = useAuthStore();
   const [email, setEmail] = useState('executive@apexmusic.com');
   const [password, setPassword] = useState('••••••••');
+
+  if (isAuthenticated && user) {
+    return <Navigate to={getRoleHomePath(user.role)} replace />;
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

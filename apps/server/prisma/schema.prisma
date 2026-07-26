@@ -160,3 +160,22 @@ model RecentlyPlayed {
 
   @@map("recently_played")
 }
+
+model Banner {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  subtitle    String?
+  description String
+  badgeText   String?
+  imageUrl    String?
+  ctaText     String?
+  ctaLink     String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  targetPage  String   @default("HOME")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("banners")
+}
+
